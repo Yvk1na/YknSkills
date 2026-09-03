@@ -5,6 +5,7 @@ import dev.aurelium.auraskills.api.stat.StatModifier;
 import dev.aurelium.auraskills.api.trait.TraitModifier;
 import dev.aurelium.auraskills.common.AuraSkillsPlugin;
 import dev.aurelium.auraskills.common.config.Option;
+import dev.aurelium.auraskills.common.migration.CombatSkillMigration;
 import dev.aurelium.auraskills.common.ref.PlayerRef;
 import dev.aurelium.auraskills.common.scheduler.TaskRunnable;
 import dev.aurelium.auraskills.common.user.AntiAfkLog;
@@ -45,6 +46,7 @@ public abstract class StorageProvider {
             }
 
             User user = loadRaw(uuid, platformPlayer);
+            CombatSkillMigration.migrate(plugin, user);
             fixInvalidData(user);
 
             plugin.getUserManager().addUser(user);

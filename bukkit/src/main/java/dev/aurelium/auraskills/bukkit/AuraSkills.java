@@ -75,6 +75,7 @@ import dev.aurelium.auraskills.common.menu.MenuHelper;
 import dev.aurelium.auraskills.common.message.MessageKey;
 import dev.aurelium.auraskills.common.message.PlatformLogger;
 import dev.aurelium.auraskills.common.message.type.CommandMessage;
+import dev.aurelium.auraskills.common.migration.CombatConfigMigration;
 import dev.aurelium.auraskills.common.migration.MigrationManager;
 import dev.aurelium.auraskills.common.ref.PlayerRef;
 import dev.aurelium.auraskills.common.reward.RewardManager;
@@ -228,6 +229,9 @@ public class AuraSkills extends JavaPlugin implements AuraSkillsPlugin {
         userManager = new BukkitUserManager(this);
         presetManager = new PresetManager(this);
         generateConfigs(); // Generate default config files if missing
+        if (new CombatConfigMigration(this).migrate()) {
+            messageProvider.loadMessages();
+        }
         generateDefaultMenuFiles();
         // Handle migration
         MigrationManager migrationManager = new MigrationManager(this);

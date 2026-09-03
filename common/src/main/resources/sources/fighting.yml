@@ -2,7 +2,9 @@ default:
   type: entity
   entity: '{key}'
   trigger: death
-  damager: player
+  damagers:
+    - player
+    - projectile
   menu_item:
     material: '{key}_spawn_egg'
 sources:

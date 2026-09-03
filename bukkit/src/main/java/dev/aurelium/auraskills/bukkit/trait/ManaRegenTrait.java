@@ -42,7 +42,10 @@ public class ManaRegenTrait extends TraitImpl {
                     double maxMana = user.getMaxMana();
                     if (originalMana < maxMana) {
                         if (!user.getAbilityData(ManaAbilities.ABSORPTION).getBoolean("activated")) {
-                            double regen = user.getEffectiveTraitLevel(Traits.MANA_REGEN);
+                            double regen = calculateRegen(
+                                    user.getEffectiveTraitLevel(Traits.MANA_REGEN),
+                                    maxMana,
+                                    Traits.MANA_REGEN.optionDouble("max_mana_percent_per_second", 2.0));
                             double finalRegen = Math.min(originalMana + regen, maxMana) - originalMana;
                             ManaRegenerateEvent event = new ManaRegenerateEvent(player, user.toApi(), finalRegen);
                             Bukkit.getPluginManager().callEvent(event);
@@ -55,6 +58,11 @@ public class ManaRegenTrait extends TraitImpl {
             }
         };
         plugin.getScheduler().timerSync(task, 0, 1, TimeUnit.SECONDS);
+    }
+
+    static double calculateRegen(double manaRegen, double maxMana, double maxManaPercentPerSecond) {
+        double percentRegen = maxMana * Math.max(maxManaPercentPerSecond, 0.0) / 100.0;
+        return Math.max(manaRegen + percentRegen, 0.0);
     }
 
 }

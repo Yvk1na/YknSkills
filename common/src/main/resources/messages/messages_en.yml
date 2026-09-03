@@ -144,27 +144,27 @@ abilities:
     desc: "{value}% chance to negate a harmful potion effect from being applied."
     info: "{value}% No Debuff"
   parry:
-    name: Parry
-    desc: "Missing a sword swing within {time}s before being hit reduces damage by {value}% and cancels knockback."
-    info: "{value}% Dmg Reduction"
+    name: Combat Reflexes
+    desc: "Melee: Missing a sword swing within {time}s before being hit reduces damage by {value}% and cancels knockback. Ranged: Arrows are retrieved after {delay}s when within {ranged_value} blocks."
+    info: "{value}% Parry / Arrow Retrieval"
     parried: "<red>Attack parried"
   fighter:
-    name: Fighter
-    desc: "Earn {value}% more Fighting XP."
+    name: Combat Training
+    desc: "Earn {value}% more Combat XP from melee and ranged kills."
     info: "+{value}% XP"
   sword_master:
-    name: Sword Master
-    desc: "Deal {value}% more damage with swords."
-    info: "+{value}% Sword Damage"
+    name: Weapon Master
+    desc: "Deal {value}% more damage with swords and bows."
+    info: "+{value}% Sword and Bow Damage"
   first_strike:
-    name: First Strike
-    desc: "Deal {value}% more damage on the first hit."
-    info: "+{value}% Dmg First Hit"
+    name: Break Formation
+    desc: "Melee first hits deal {value}% more damage. Ranged attacks have a {ranged_value}% chance to gain one piercing level."
+    info: "First Hit / Ranged Piercing"
     dealt: "<red>First Strike Dealt!"
   bleed:
-    name: Bleed
-    desc: "{value}% chance to make the enemy bleed for {base_ticks} bleed ticks, dealing {value_2} damage per tick. {added_ticks} ticks are added to enemies already bleeding."
-    info: "{value}% Chance, {value_2} Damage"
+    name: Suppression
+    desc: "Melee attacks have a {value}% chance to bleed enemies for {base_ticks} ticks at {value_2} damage per tick. Ranged attacks have a {ranged_value}% chance to slow enemies by {reduction_percent}%."
+    info: "Melee Bleed / Ranged Stun"
     enemy_bleeding: "<red>Enemy Bleeding!"
     self_bleeding: "<red>You are bleeding!"
     stop: "<white>The bleeding has stopped"
@@ -881,8 +881,8 @@ skills:
     name: Defense
     desc: "Take damage from entities to earn Defense {xp_unit}"
   fighting:
-    name: Fighting
-    desc: "Fight mobs with melee weapons to earn Fighting {xp_unit}"
+    name: Combat
+    desc: "Defeat mobs with melee weapons or bows to earn Combat {xp_unit}"
   endurance:
     name: Endurance
     desc: "Walk and run to earn Endurance {xp_unit}"

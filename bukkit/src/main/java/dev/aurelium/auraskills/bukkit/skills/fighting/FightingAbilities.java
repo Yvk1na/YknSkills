@@ -50,13 +50,28 @@ public class FightingAbilities extends BukkitAbilityImpl {
         if (ability.equals(Abilities.BLEED)) {
             return TextUtil.replace(input,
                     "{base_ticks}", String.valueOf(ability.optionInt("base_ticks", 3)),
-                    "{added_ticks}", String.valueOf(ability.optionInt("added_ticks", 2)));
+                    "{added_ticks}", String.valueOf(ability.optionInt("added_ticks", 2)),
+                    "{ranged_value}", NumberUtil.format1(getRangedValue(ability, user)),
+                    "{reduction_percent}", NumberUtil.format1(ability.optionDouble("ranged_speed_reduction", 0.2) * 100.0));
         } else if (ability.equals(Abilities.PARRY)) {
             String secDisplay = NumberUtil.format2((double) ability.optionInt("time_ms", 250) / 1000);
             return TextUtil.replace(input,
-                    "{time}", secDisplay);
+                    "{time}", secDisplay,
+                    "{ranged_value}", NumberUtil.format1(getRangedValue(ability, user)),
+                    "{delay}", NumberUtil.format1(ability.optionDouble("ranged_delay_sec", 3.0)));
+        } else if (ability.equals(Abilities.FIRST_STRIKE)) {
+            return TextUtil.replace(input,
+                    "{ranged_value}", NumberUtil.format1(getRangedValue(ability, user)));
         }
         return input;
+    }
+
+    private double getRangedValue(Ability ability, User user) {
+        int level = user.getAbilityLevel(ability);
+        if (level <= 0) return 0.0;
+        double base = ability.optionDouble("ranged_base_value", ability.getBaseValue());
+        double perLevel = ability.optionDouble("ranged_value_per_level", ability.getValuePerLevel());
+        return base + perLevel * (level - 1);
     }
 
     private DamageModifier swordMaster(Player player, User user) {

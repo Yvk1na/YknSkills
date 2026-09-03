@@ -86,7 +86,7 @@ public class EntityLeveler extends SourceLeveler {
 
         if (failsChecks(player, entity.getLocation(), skill)) return;
 
-        plugin.getLevelManager().addEntityXp(user, skill, source, getSpawnerMultiplier(entity, skill) * source.getXp(),
+        plugin.getLevelManager().addEntityXp(user, skill, source, getEntityXpMultiplier(skill) * getSpawnerMultiplier(entity, skill) * source.getXp(),
                 entity, damagerEntity, event);
     }
 
@@ -118,7 +118,7 @@ public class EntityLeveler extends SourceLeveler {
         if (failsChecks(event, player, entity.getLocation(), skill)) return;
 
         double damageMultiplier = getDamageMultiplier(entity, source, event);
-        plugin.getLevelManager().addEntityXp(user, skill, source, damageMultiplier * getSpawnerMultiplier(entity, skill) * source.getXp(),
+        plugin.getLevelManager().addEntityXp(user, skill, source, damageMultiplier * getEntityXpMultiplier(skill) * getSpawnerMultiplier(entity, skill) * source.getXp(),
                 entity, event.getDamager(), event);
     }
 
@@ -146,7 +146,7 @@ public class EntityLeveler extends SourceLeveler {
         if (failsChecks(player, entity.getLocation(), skill)) return;
 
         double damageMultiplier = getDamageMultiplier(entity, source, event);
-        plugin.getLevelManager().addEntityXp(user, skill, source, damageMultiplier * getSpawnerMultiplier(entity, skill) * source.getXp(),
+        plugin.getLevelManager().addEntityXp(user, skill, source, damageMultiplier * getEntityXpMultiplier(skill) * getSpawnerMultiplier(entity, skill) * source.getXp(),
                 entity, player, null);
     }
 
@@ -178,6 +178,7 @@ public class EntityLeveler extends SourceLeveler {
         sources = filterByTrigger(sources, trigger);
 
         for (SkillSource<EntityXpSource> entry : sources) {
+            if (!entry.skill().isEnabled()) continue;
             EntityXpSource source = entry.source();
 
             // Discard if entity type does not match
@@ -290,6 +291,10 @@ public class EntityLeveler extends SourceLeveler {
         } else {
             return 1.0;
         }
+    }
+
+    private double getEntityXpMultiplier(Skill skill) {
+        return skill.optionDouble("entity_xp_multiplier", 1.0);
     }
 
     private boolean isSpawnerSpawned(Entity entity) {

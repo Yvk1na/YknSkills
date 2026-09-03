@@ -100,6 +100,8 @@ traits:
   auraskills/mana_regen:
     enabled: true
     base: 0.1
+    # Mana restored each second = mana_regen trait + max mana * this percentage.
+    max_mana_percent_per_second: 2.0
   auraskills/farming_luck:
     enabled: true
   auraskills/foraging_luck:
@@ -117,6 +119,7 @@ traits:
     formula: -1 * 1.025^(-1 * value) + 1
   auraskills/max_mana:
     enabled: true
+    # Maximum mana is 20 + (Wisdom * 2), with no global cap.
     allow_overflow: false
     base: 20
   auraskills/damage_reduction:
@@ -136,4 +139,4 @@ traits:
   auraskills/double_drop:
     enabled: true
     max_percent: 100
-file_version: 4
+file_version: 5

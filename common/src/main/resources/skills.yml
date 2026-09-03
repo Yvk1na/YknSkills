@@ -71,9 +71,8 @@ skills:
       - auraskills/bow_master
       - auraskills/piercing
       - auraskills/stun
-    mana_ability: auraskills/charged_shot
     options:
-      enabled: true
+      enabled: false
       max_level: 100
       spawner_multiplier: 1
       check_multiplier_permissions: true
@@ -100,11 +99,11 @@ skills:
       - auraskills/sword_master
       - auraskills/first_strike
       - auraskills/bleed
-    mana_ability: auraskills/lightning_blade
     options:
       enabled: true
       max_level: 100
       spawner_multiplier: 1
+      entity_xp_multiplier: 0.5
       check_multiplier_permissions: true
   auraskills/agility:
     abilities:

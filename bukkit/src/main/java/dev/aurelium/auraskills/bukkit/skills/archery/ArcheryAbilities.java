@@ -6,14 +6,12 @@ import dev.aurelium.auraskills.api.damage.DamageMeta;
 import dev.aurelium.auraskills.api.damage.DamageModifier;
 import dev.aurelium.auraskills.api.damage.DamageType;
 import dev.aurelium.auraskills.api.event.damage.DamageEvent;
-import dev.aurelium.auraskills.api.util.NumberUtil;
 import dev.aurelium.auraskills.bukkit.AuraSkills;
 import dev.aurelium.auraskills.bukkit.ability.BukkitAbilityImpl;
 import dev.aurelium.auraskills.bukkit.util.AttributeCompat;
 import dev.aurelium.auraskills.bukkit.util.CompatUtil;
 import dev.aurelium.auraskills.bukkit.util.VersionUtils;
 import dev.aurelium.auraskills.common.user.User;
-import dev.aurelium.auraskills.common.util.text.TextUtil;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -45,11 +43,13 @@ public class ArcheryAbilities extends BukkitAbilityImpl {
     private final String stunKey = "stun_ability";
 
     public ArcheryAbilities(AuraSkills plugin) {
-        super(plugin, Abilities.RETRIEVAL, Abilities.ARCHER, Abilities.BOW_MASTER, Abilities.PIERCING, Abilities.STUN);
+        // Ranged combat now uses the five Fighting abilities. Keep this listener
+        // implementation registered without claiming a second set of abilities.
+        super(plugin);
     }
 
     private DamageModifier bowMaster(Player player, User user) {
-        var ability = Abilities.BOW_MASTER;
+        var ability = Abilities.SWORD_MASTER;
 
         if (isDisabled(ability) || failsChecks(player, ability)) return DamageModifier.none();
 
@@ -100,12 +100,12 @@ public class ArcheryAbilities extends BukkitAbilityImpl {
     }
 
     public void stun(Player player, User user, LivingEntity entity) {
-        var ability = Abilities.STUN;
-        double stunSpeedReduction = ability.optionDouble("speed_reduction", 0.2);
+        var ability = Abilities.BLEED;
+        double stunSpeedReduction = ability.optionDouble("ranged_speed_reduction", 0.2);
 
         if (failsChecks(player, ability)) return;
 
-        if (rand.nextDouble() < (getValue(ability, user) / 100)) {
+        if (rand.nextDouble() < (getRangedValue(ability, user) / 100)) {
             AttributeInstance speed = entity.getAttribute(AttributeCompat.movementSpeed);
             if (speed == null) return;
             // Check if there already is a stun modifier
@@ -177,7 +177,7 @@ public class ArcheryAbilities extends BukkitAbilityImpl {
     }
 
     public void piercing(Player player, EntityDamageByEntityEvent event, User user, Arrow arrow) {
-        var ability = Abilities.PIERCING;
+        var ability = Abilities.FIRST_STRIKE;
 
         if (isDisabled(ability)) return;
 
@@ -189,7 +189,7 @@ public class ArcheryAbilities extends BukkitAbilityImpl {
                 return;
             }
         }
-        if (rand.nextDouble() < (getValue(ability, user) / 100)) {
+        if (rand.nextDouble() < (getRangedValue(ability, user) / 100)) {
             if (arrow.getPierceLevel() < 127) {
                 arrow.setPierceLevel(arrow.getPierceLevel() + 1);
             }
@@ -197,28 +197,18 @@ public class ArcheryAbilities extends BukkitAbilityImpl {
     }
 
     public void pierceInit(User user, Player player, Arrow arrow) {
-        var ability = Abilities.PIERCING;
+        var ability = Abilities.FIRST_STRIKE;
 
         if (isDisabled(ability)) return;
 
         if (failsChecks(player, ability)) return;
 
-        if (rand.nextDouble() < (getValue(ability, user) / 100)) {
+        if (rand.nextDouble() < (getRangedValue(ability, user) / 100)) {
             // Adds 1 pierce to the initial shot otherwise it doesn't pierce on non-lethal damage.
             if (arrow.getPierceLevel() < 127) {
                 arrow.setPierceLevel(arrow.getPierceLevel() + 1);
             }
         }
-    }
-
-    @Override
-    public String replaceDescPlaceholders(String input, Ability ability, User user) {
-        if (ability.equals(Abilities.RETRIEVAL)) {
-            return TextUtil.replace(input, "{time}", NumberUtil.format1(ability.optionDouble("delay_sec", 3)));
-        } else if (ability.equals(Abilities.STUN)) {
-            return TextUtil.replace(input, "{reduction_percent}", NumberUtil.format1(ability.optionDouble("speed_reduction", 0.2) * 100.0));
-        }
-        return input;
     }
 
     @EventHandler
@@ -230,7 +220,7 @@ public class ArcheryAbilities extends BukkitAbilityImpl {
         if (arrow.getPickupStatus() != PickupStatus.ALLOWED) return;
         if (!(arrow.getShooter() instanceof Player player)) return;
 
-        var ability = Abilities.RETRIEVAL;
+        var ability = Abilities.PARRY;
         if (isDisabled(ability)) return;
 
         if (failsChecks(player, ability)) return;
@@ -240,7 +230,7 @@ public class ArcheryAbilities extends BukkitAbilityImpl {
             if (!arrow.isValid()) return; // Ignore if the arrow has de-spawned or was picked up
             if (!arrow.getWorld().equals(player.getWorld())) return;
 
-            double value = getValue(ability, plugin.getUser(player));
+            double value = getRangedValue(ability, plugin.getUser(player));
             // Check if arrow is close enough
             if (arrow.getLocation().distanceSquared(player.getLocation()) > value * value) {
                 return;
@@ -261,7 +251,15 @@ public class ArcheryAbilities extends BukkitAbilityImpl {
                 });
             });
 
-        }, Math.round(ability.optionDouble("delay_sec", 3) * 1000), TimeUnit.MILLISECONDS);
+        }, Math.round(ability.optionDouble("ranged_delay_sec", 3) * 1000), TimeUnit.MILLISECONDS);
+    }
+
+    private double getRangedValue(Ability ability, User user) {
+        int level = user.getAbilityLevel(ability);
+        if (level <= 0) return 0.0;
+        double base = ability.optionDouble("ranged_base_value", ability.getBaseValue());
+        double perLevel = ability.optionDouble("ranged_value_per_level", ability.getValuePerLevel());
+        return base + perLevel * (level - 1);
     }
 
     private ItemStack getArrowItem(AbstractArrow abstractArrow) {

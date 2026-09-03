@@ -144,27 +144,27 @@ abilities:
     desc: "{value}% 的几率清除获得的负面药水效果"
     info: "{value}% 清除负面效果几率"
   parry:
-    name: 招架
-    desc: "受击后的 {time} 秒内所受剑横扫伤害降低 {value}% 并免疫击退."
-    info: "{value}% 伤害减免"
+    name: 战斗反射
+    desc: "近战：在攻击落空后的 {time} 秒内招架，使所受伤害降低 {value}% 并免疫击退。远程：落地 {delay} 秒后的箭矢会在 {ranged_value} 格范围内自动回收。"
+    info: "招架 {value}% / 箭矢回收"
     parried: "<red>闪避本次攻击"
   fighter:
     name: 战斗专精
-    desc: "获得额外的 {value}% 战斗熟练度"
+    desc: "近战与弓箭击杀获得额外 {value}% 的战斗经验。"
     info: "+{value}% 熟练度"
   sword_master:
-    name: 剑之大师
-    desc: "提升 {value}% 的剑伤害"
-    info: "+{value}% 任意 剑 伤害"
+    name: 武器大师
+    desc: "剑与弓造成的伤害提高 {value}%。"
+    info: "+{value}% 剑与弓伤害"
   first_strike:
-    name: 先出之刃
-    desc: "首次攻击生物的时候造成 {value}% 的额外伤害"
-    info: "+{value}% 首次攻击伤害"
+    name: 破阵
+    desc: "近战首次攻击额外造成 {value}% 伤害；远程攻击有 {ranged_value}% 几率额外获得 1 级穿透。"
+    info: "首击强化 / 远程穿透"
     dealt: "<red>先出之刃!"
   bleed:
-    name: 流血
-    desc: "{value}% 的几率使敌人流血失血3次, 每次流血伤害 {value_2} 点"
-    info: "{value}% 几率, {value_2} 伤害/次"
+    name: 压制
+    desc: "近战有 {value}% 几率使敌人流血 {base_ticks} 次，每次造成 {value_2} 点伤害；远程有 {ranged_value}% 几率使敌人减速 {reduction_percent}%。"
+    info: "近战流血 / 远程眩晕"
     enemy_bleeding: "<red>敌人正在流血!"
     self_bleeding: "<red>你正在流血!"
     stop: "<white>流血已停止..."
@@ -881,8 +881,8 @@ skills:
     name: 防御
     desc: "被实体攻击以获得防御 {xp_unit}"
   fighting:
-    name: 战士
-    desc: "使用近战武器对实体造成伤害以获得战士 {xp_unit}"
+    name: 战斗
+    desc: "使用近战武器或弓箭击杀生物以获得战斗 {xp_unit}"
   endurance:
     name: 耐力
     desc: "跑跑跳跳就可以获得耐力 {xp_unit}"

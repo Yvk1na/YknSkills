@@ -33,7 +33,8 @@ public class XpRequirementsLoader {
         try {
             loader.generateUserFile(fileName);
 
-            ConfigurationNode config = loader.loadUserFile(fileName);
+            ConfigurationNode userConfig = loader.loadUserFile(fileName);
+            ConfigurationNode config = loader.loadContentAndMerge(userConfig, fileName);
 
             // Load default section
             ConfigurationNode defaultConfig = config.node("default");

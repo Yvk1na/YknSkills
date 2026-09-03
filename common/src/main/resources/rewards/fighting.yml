@@ -9,4 +9,14 @@ patterns:
     value: 1
     pattern:
       interval: 2
+  - type: stat
+    stat: crit_chance
+    value: 1
+    pattern:
+      interval: 1
+  - type: stat
+    stat: strength
+    value: 1
+    pattern:
+      interval: 2
 levels:
